@@ -103,7 +103,7 @@ body {
 
 .budget__income {
   margin-bottom: 10px;
-  background-color: #7ea574;
+  background-color: #029820;
   /* background-color: #029820 */
 }
 
@@ -115,23 +115,26 @@ body {
 .budget__expenses--text {
   float: left;
   font-size: 16px;
-  color: rgb(44, 42, 42);
+  color: rgb(0, 0, 0);
   margin-top: 2px;
+  font-weight: 700;
 }
 
 .budget__income--value,
 .budget__expenses--value {
   letter-spacing: 1px;
   float: left;
+  font-weight: 700;
 }
 
 .budget__income--percentage,
 .budget__expenses--percentage {
   float: left;
-  width: 40px;
+  width: 50px;
   font-size: 12px;
   padding: 3px 0;
   margin-left: 10px;
+  font-weight: 800;
 }
 
 .budget__expenses--percentage {

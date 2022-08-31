@@ -63,6 +63,11 @@ def logout():
     return redirect(url_for('index'))
 
 
+# def format_transaction_values(list_of_transactions):
+#     for transaction in list_of_transactions:
+#         transaction.value = '{:,}'.format(transaction.value)
+
+
 @app.route('/')
 @authentication_required
 def index():
@@ -79,7 +84,7 @@ def index():
         positive_transactions = []
         total_budget = 0
     else:
-        total_budget = sum([x.value for x in positive_transactions])
+        total_budget = round(sum([x.value for x in positive_transactions]), 1)
 
     negative_transactions = TransactionModel.find_by_year_month_type(
         transaction_type='negative',
@@ -106,10 +111,12 @@ def index():
         available_budget = '+{:,}'.format(round(total_budget-total_expense, 1))
     elif total_budget < total_expense:
         available_budget = '-{:,}'.format(round(total_expense-total_budget, 1))
+
     return render_template('index.html', positive_transactions=positive_transactions, \
         negative_transactions_percentages=zip(negative_transactions, percentage_list),\
-        total_budget=total_budget, total_expense=total_expense, overall_percentage=overall_percentage,\
-        available_budget=available_budget, display_month_year=display_month_year, \
+        total_budget='{:,}'.format(total_budget), total_expense='{:,}'.format(total_expense), \
+        overall_percentage=overall_percentage, available_budget=available_budget, 
+        display_month_year=display_month_year, \
         today=f'{current_date.year}-{current_date.month}-{current_date.day}', user=session['user'])
     
 
