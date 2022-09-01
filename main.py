@@ -23,6 +23,8 @@ def authentication_required(func):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        if request.form['password'] != request.form['repassword']:
+            return render_template('register.html', message="Passwords do not match!")
         # Hashing the password
         hashPassword = bcrypt_obj.generate_password_hash(request.form['password'])
         try:
@@ -34,7 +36,7 @@ def register():
             db.session.commit()
             return redirect(url_for('login'))
         except:
-            return render_template('index.html', message="User Already Exists")
+            return render_template('register.html', message="User Already Exists!")
     else:
         return render_template('register.html')
 
@@ -53,7 +55,7 @@ def login():
                 session['logged_in'] = True
                 session['user'] = u # Store the username in session variable for display after redirection
                 return redirect(url_for('index'))
-        return render_template('login.html', message="Incorrect Details")
+        return render_template('login.html', message="Incorrect Details!")
 
 
 @app.route('/logout', methods=['GET', 'POST'])
