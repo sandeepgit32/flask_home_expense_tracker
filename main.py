@@ -1,12 +1,13 @@
+import os
 from flask import render_template, request, redirect, url_for, session, flash
 from datetime import date, datetime
 from models import UserModel, TransactionModel
 from flask_bcrypt import Bcrypt
 from functools import wraps
-from app import app
+from app import create_app
 from db import db
 
-
+app = create_app(os.environ.get("FLASK_ENV"))
 bcrypt_obj = Bcrypt(app)
 
 
@@ -170,5 +171,5 @@ def delete():
 
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run()
+    # db.create_all()
+    app.run(host='0.0.0.0', port=5000, debug=True)
