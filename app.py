@@ -10,6 +10,8 @@ def create_app(config_name='development'):
     elif config_name == 'production':
         app.config.from_object('config.ProdConfig')
 
+    print('------------------*************', app.secret_key)
+
     db.init_app(app)
 
     with app.app_context():

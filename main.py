@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv('.env', verbose=True)
 from flask import render_template, request, redirect, url_for, session, flash
 from datetime import date, datetime
 from models import UserModel, TransactionModel
