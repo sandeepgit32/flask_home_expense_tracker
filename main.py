@@ -53,15 +53,15 @@ def login():
     else:
         u = request.form['username']
         p = request.form['password']  # Hashing the password
-        data = UserModel.query.filter_by(username=u).first()
-        if data is not None:
+        user_data = UserModel.query.filter_by(username=u).first()
+        if user_data is not None:
             # Password is checked
-            if bcrypt_obj.check_password_hash(data.password, p): 
+            if bcrypt_obj.check_password_hash(user_data.password, p): 
                 session['logged_in'] = True
                 session['user'] = u # Store the username in session variable for display after redirection
-                session['name'] = data.name
-                session['surname'] = data.surname
-                session['last_login_time'] = data.last_login_time
+                session['name'] = user_data.name
+                session['surname'] = user_data.surname
+                session['last_login_time'] = user_data.last_login_time
                 session['current_login_time'] = datetime.now()
                 return redirect(url_for('index'))
         return render_template('login.html', message="Incorrect Details!")
@@ -99,8 +99,8 @@ def transactions():
         current_date = date.today()
         transaction_year, transaction_month = current_date.year, current_date.month
     elif request.method == 'POST':
-        transaction_year, transaction_month = request.form['transaction_list_year'], \
-            request.form['transaction_list_month']
+        transaction_year, transaction_month = int(request.form['transaction_list_year']), \
+            int(request.form['transaction_list_month']) # request.form always send data as string
         # current_month_text = current_date.strftime("%B")
 
     positive_transactions = TransactionModel.find_by_year_month_type(
@@ -164,6 +164,11 @@ def add():
         except:
             flash('You have provided an invalid value!')
             return redirect(url_for('transactions'))
+        
+        if request.form['transaction_type'] == 'negative':
+            category = request.form['category']
+        else:
+            category = None
 
         transaction_item = TransactionModel(
             user=session['user'],
@@ -173,6 +178,7 @@ def add():
             transaction_year=int(selected_year),
             transaction_type=request.form['transaction_type'],
             storing_datetime=datetime.now(),
+            category=category,
             value=round(inserted_value, 1)
         )
         TransactionModel.save_to_db(transaction_item)

@@ -151,17 +151,17 @@
  
   .income_item__description {
     float: left;
-    width: 230px;
+    width: 220px;
   }
 
   .expense_item__description {
     float: left;
-    width: 350px;
+    width: 320px;
   }
   
   .item__date {
       float: left;
-      width: 120px;
+      width: 100px;
   }
   
   .item__value {

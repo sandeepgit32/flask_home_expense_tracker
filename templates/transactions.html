@@ -106,12 +106,12 @@
                                     <option value="negative" selected>-</option>
                                 </select>
                                 <select class="add__category" name="category">
-                                    <option value="food" selected>Food</option>
-                                    <option value="travelling">Travelling</option>
-                                    <option value="groceries">Groceries</option>
-                                    <option value="Medicine">Medicines</option>
-                                    <option value="bill">Monthly Bills</option>
-                                    <option value="others">Others</option>
+                                    <option value="Food" selected>Food</option>
+                                    <option value="Travelling">Travelling</option>
+                                    <option value="Groceries">Groceries</option>
+                                    <option value="Medical expense">Medicines</option>
+                                    <option value="Monthly bill">Monthly Bills</option>
+                                    <option value="Others">Others</option>
                                 </select>
                                 <input type="text" class="add__description" placeholder="Add description"
                                     name="description">
@@ -128,7 +128,7 @@
                     <div class="income">
                         <h2 class="income__title">Income</h2>
                         <div class="income__list">
-                            {% for transaction, percentage in positive_transactions %}
+                            {% for transaction, percentage in positive_transactions_percentages %}
                                 <div class="item clearfix" id="income-0">
                                     <div class="item__date"><b>{{ transaction.transaction_day }}/{{ transaction.transaction_month }}/{{ transaction.transaction_year }}</b></div>
                                     <div class="income_item__description">{{ transaction.description }}</div>
@@ -166,7 +166,7 @@
                                         <div class="item__delete">
                                             <form name="deleteForm" id="deleteForm" method="POST"
                                                 action="{{ url_for('delete') }}" novalidate>
-                                                <input type="hidden" name="transaction_id" value="32">
+                                                <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
                                                 <button type="submit" class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                                             </form>
                                         </div>
