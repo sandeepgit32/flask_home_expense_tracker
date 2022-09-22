@@ -32,7 +32,9 @@ def register():
         hashPassword = bcrypt_obj.generate_password_hash(request.form['password'])
         try:
             user_obj = UserModel(
-                username = request.form['username'], 
+                username = request.form['username'],
+                name = request.form['name'], 
+                surname = request.form['surname'], 
                 password = hashPassword
             )
             db.session.add(user_obj)

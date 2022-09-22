@@ -6,10 +6,19 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
+    last_login_time = db.Column(db.DateTime, nullable=True)
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, name, surname):
         self.username = username
         self.password = password
+        self.name = name
+        self.surname = surname
+
+    @classmethod
+    def find_by_usename(cls, username: str) -> "TransactionModel":
+        return cls.query.filter_by(username=username).first()
 
 
 class TransactionModel(db.Model):
@@ -21,6 +30,7 @@ class TransactionModel(db.Model):
     transaction_year = db.Column(db.Integer, nullable=False)
     transaction_type = db.Column(db.String(10), nullable=False) # 'positive'/'negative'
     storing_datetime = db.Column(db.DateTime, nullable=False)
+    category = db.Column(db.String(20), nullable=False)
     value = db.Column(db.Float(precision=2), nullable=False)
 
     @classmethod
