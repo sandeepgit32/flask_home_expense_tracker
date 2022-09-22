@@ -2,139 +2,198 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600" rel="stylesheet" type="text/css">
-    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
-    <link type="text/css" href="{{ url_for('static', filename='budget_style.css') }}" rel="stylesheet">
-    <title>Home Expense Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css"
+    integrity="sha384-zIaWifL2YFF1qaDiAo0JFgsmasocJ/rqu7LKYH8CoBEXqGbb9eO+Xi3s6fQhgFWM" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+
+  <!-- <link rel="icon" type="image/png" href="assets/dgit-logo.png"> -->
+  <link type="text/css" href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+  <title>Expense Tracker</title>
 </head>
 
-<body>
+<body id="body">
+  <div class="container">
+    <nav class="navbar">
+      <div class="nav_icon" onclick="toggleSidebar()">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+      </div>
+      <div class="navbar__left">
+        <a class="active_link" href="{{url_for('index')}}">Dashboard</a>
+        <a href="{{url_for('transactions')}}">Transactions</a>
+        <!-- <a href="settings.html">Settings</a> -->
+      </div>
+      <div class="navbar__right">
+        <a href="#">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </a>
+        <a href="#" id="myBtn">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+        </a>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
 
-    <div class="top">
-        <a class="logout__text" href="{{ url_for('logout') }}">Logout</a>
-        <div class="user__text">Welcome to <b>{{ user }}</b>'s Expense Sheet</div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class=flashes>
-                    {% for message in messages %}
-                        <div>{{ message }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-        <div class="budget">
-            <div class="budget__title">
-                Available Budget in <span class="budget__title--month">{{ display_month_year }}</span>
+            <!-- Modal content -->
+            <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <canvas id="clock" class="clock"></canvas>
             </div>
-
-            <div class="budget__value">{{ available_budget }}</div>
-
-            <div class="budget__income clearfix">
-                <div class="budget__income--text">Income</div>
-                <div class="right">
-                    <div class="budget__income--value">+ {{ total_budget }}</div>
-                    <div class="budget__income--percentage">&nbsp;</div>
-                </div>
-            </div>
-
-            <div class="budget__expenses clearfix">
-                <div class="budget__expenses--text">Expenses</div>
-                <div class="right clearfix">
-                    <div class="budget__expenses--value">- {{ total_expense }}</div>
-                    <div class="budget__expenses--percentage">{{ overall_percentage }}%</div>
-                </div>
-            </div>
+        
         </div>
+        <a href="#">
+          <!-- <img width="30" src="assets/avatar.svg" alt="" />
+          <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
+          <span class="name_label">Sandip Karar</span>
+        </a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="main__container">
+        <!-- MAIN TITLE STARTS HERE -->
+
+        <div class="main__title">
+          <!-- <img src="assets/hello.svg" alt="" /> -->
+          <div class="main__greeting">
+            <h1>Welcome Sandip</h1>
+            <p>Last login: 09:33:28 - Saturday, 23rd September, 2021</p>
+          </div>
+        </div>
+
+        <!-- MAIN TITLE ENDS HERE -->
+
+        <!-- MAIN CARDS STARTS HERE -->
+        <div class="main__cards">
+          <div class="card">
+            <i class="fa fa-money-bill fa-2x text-lightblue" aria-hidden="true"></i>
+            <div class="card_inner">
+              <p class="text-primary-p">Available Budget</p>
+              <span class="font-bold text-title">
+                <i class="fa fa-rupee-sign"></i>
+                2,914.0
+              </span>
+            </div>
+          </div>
+
+          <div class="card">
+            <i class="fa fa-calendar fa-2x text-lightblue" aria-hidden="true"></i>
+            <div class="card_inner">
+              <p class="text-primary-p">Days remaining in month</p>
+              <span class="font-bold text-title">11</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <span style="color:rgb(54, 128, 153); font-size: 24px;">MTD</span>
+            <div class="card_inner">
+              <p class="text-primary-p">MTD Expenditure</p>
+              <span class="font-bold text-title">
+                <i class="fa fa-rupee-sign"></i>
+                28,811.0
+              </span>
+            </div>
+          </div>
+
+          <div class="card">
+            <span style="color:rgb(54, 128, 153); font-size: 24px;">YTD</span>
+            <div class="card_inner">
+              <p class="text-primary-p">YTD Expenditure</p>
+              <span class="font-bold text-title">
+                <i class="fa fa-rupee-sign"></i>
+                1,103.0
+              </span>
+            </div>
+            
+          </div>
+        </div>
+        <!-- MAIN CARDS ENDS HERE -->
+
+        <!-- CHARTS STARTS HERE -->
+        <div class="charts">
+          <div class="charts__left">
+            <div class="charts__left__title">
+              <div>
+                <h1>Expenditure (% of Budget)</h1>
+                <p>In time (% of total days passed in current month)</i></p>
+              </div>
+            </div>
+            <div id="target1"></div>
+          </div>
+
+          <div class="charts__right">
+            <div class="charts__right__title">
+              <div>
+                <h1>Cumulative Expenditure MTD
+                    (<i class="fa fa-rupee-sign"></i>)
+                </h1>
+              </div>
+            </div>
+            <div id="target2"></div>
+          </div>
+        </div>
+        <!-- CHARTS ENDS HERE -->
+
+        <!-- SECOND SET OF CHARTS STARTS HERE -->
+        <div class="charts">
+          <div class="charts__left">
+            <div class="charts__left__title">
+              <div>
+                <h1>Last Six Months Budget and Expenditure
+                    (<i class="fa fa-rupee-sign"></i>)
+                </h1>
+              </div>
+            </div>
+            <div id="apex1"></div>
+          </div>
+
+          <div class="charts__right">
+            <div class="charts__right__title">
+              <div>
+                <h1>Category Wise Expenditure (%)</h1>
+              </div>
+            </div>
+            <div id="apex2"></div>
+          </div>
+        </div>
+        <!-- SECOND SET OF CHARTS ENDS HERE -->
+
+    </main>
+
+    <div id="sidebar">
+      <div class="sidebar__title">
+        <div class="sidebar__img">
+          <!-- <img src="assets/dgit-logo.png" alt="logo" style="width:15%; margin-right: 3%;" /> -->
+          <h3>Expense Tracker</h3>
+        </div>
+        <i onclick="closeSidebar()" class="fa fa-times" id="sidebarIcon" aria-hidden="true"></i>
+      </div>
+
+      <div class="sidebar__menu">
+        <div class="sidebar_link active_menu_link">
+          <i class="fa fa-home"></i>
+          <a href="{{url_for('index')}}">Dashboard</a>
+        </div>
+        <div class="sidebar_link">
+          <i class="fa-solid fa-dollar-sign"></i>
+          <a href="{{url_for('transactions')}}">Transactions</a>
+        </div>
+        <!-- <div class="sidebar_link">
+          <i class="fa fa-gear"></i>
+          <a href="settings.html">Settings</a>
+        </div> -->
+        <div class="sidebar__logout">
+          <i class="fa fa-power-off"></i>
+          <a href="{{url_for('logout')}}">Log out</a>
+        </div>
+      </div>
     </div>
-
-    <div class="bottom">
-        <div class="add">
-            <div class="add__container">
-                <form name="addForm" id="addForm" method="POST" action="{{ url_for('add') }}" novalidate>
-                    <input class="add__date" name="date" type="date"/>
-                    <select class="add__type" name="transaction_type">
-                        <option value="positive">+</option>
-                        <option value="negative" selected>-</option>
-                    </select>
-                    <input type="text" class="add__description" placeholder="Add description" name="description">
-                    <input type="number" class="add__value" placeholder="Value" name="value">
-                    <button type="submit" class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
-                </form>
-            </div>
-        </div>
-
-        <div class="container clearfix">
-            <div class="income">
-                <h2 class="icome__title">Income</h2>
-
-                <div class="income__list">
-                    {% for transaction in positive_transactions %}
-                        <div class="item clearfix" id="income-0">
-                            <div class="item__date"><b>{{ transaction.transaction_day }}/{{ transaction.transaction_month }}/{{ transaction.transaction_year }}</b></div>
-                            <div class="item__description">{{ transaction.description }}</div>
-                            <div class="right clearfix">
-                                <div class="item__value">+ {{ transaction.value }}</div>
-                                <div class="item__delete">
-                                    <form name="deleteForm" id="deleteForm" method="POST" action="{{ url_for('delete') }}" novalidate>
-                                        <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
-                                        <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-
-                </div>
-            </div>
-
-
-            <div class="expenses">
-                <h2 class="expenses__title">Expenses</h2>
-
-                <div class="expenses__list">
-
-                    {% for transaction, percentage in negative_transactions_percentages %}
-                        <div class="item clearfix" id="expense-0">
-                            <div class="item__date"><b>{{ transaction.transaction_day }}/{{ transaction.transaction_month }}/{{ transaction.transaction_year }}</b></div>
-                            <div class="item__description">{{ transaction.description }}</div>
-                            <div class="right clearfix">
-                                <div class="item__value">- {{ transaction.value }}</div>
-                                <div class="item__percentage">{{ percentage }}%</div>
-                                <div class="item__delete">
-                                    <form name="deleteForm" id="deleteForm" method="POST" action="{{ url_for('delete') }}" novalidate>
-                                        <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
-                                        <button type="submit" class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                        
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            var date = new Date();
-
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
-
-            if (month < 10) month = "0" + month;
-            if (day < 10) day = "0" + day;
-
-            var today = year + "-" + month + "-" + day;       
-            $(".add__date").attr("value", today);
-        });
-    </script>
-
-    <!-- <script src="{{ url_for('static', filename='budget.js') }}"></script> -->
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='clock.js') }}"></script>
 </body>
 
 </html>

@@ -123,6 +123,12 @@ def index():
         overall_percentage=overall_percentage, available_budget=available_budget, 
         display_month_year=display_month_year, \
         today=f'{current_date.year}-{current_date.month}-{current_date.day}', user=session['user'])
+
+
+@app.route('/transactions')
+@authentication_required
+def transactions():
+    return render_template('transactions.html')
     
 
 @app.route('/add', methods=['GET', 'POST'])

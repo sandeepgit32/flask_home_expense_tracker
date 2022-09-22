@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css"
+    integrity="sha384-zIaWifL2YFF1qaDiAo0JFgsmasocJ/rqu7LKYH8CoBEXqGbb9eO+Xi3s6fQhgFWM" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+  <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
+  <link type="text/css" href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+  <link type="text/css" href="{{ url_for('static', filename='transactions.css') }}" rel="stylesheet">
+  <title>Expense Tracker</title>
+</head>
+
+<body id="body">
+  <div class="container">
+    <nav class="navbar">
+      <div class="nav_icon" onclick="toggleSidebar()">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+      </div>
+      <div class="navbar__left">
+        <a href="{{url_for('index')}}">Dashboard</a>
+        <a class="active_link" href="{{url_for('transactions')}}">Transactions</a>
+        <!-- <a href="settings.html">Settings</a> -->
+      </div>
+      <div class="navbar__right">
+        <a href="#">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </a>
+        <a href="#" id="myBtn">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+        </a>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <canvas id="clock" class="clock"></canvas>
+            </div>
+        
+        </div>
+        <a href="#">
+          <!-- <img width="30" src="assets/avatar.svg" alt="" /> -->
+          <!-- <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
+          <span class="name_label">Sandip Karar</span>
+        </a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="main__container">
+        <!-- MAIN TITLE STARTS HERE -->
+
+        <div class="main__title">
+          <div class="main__greeting">
+            <h1>List of Transantions</h1>
+            <span class="year_month_selection">
+              <form>
+                <label class="year_month_label">Month</label>
+                <select class="transaction_list__type" name="transaction_list_month">
+                  <option value="January">January</option>
+                  <option value="February" selected>February</option>
+                </select>
+                <label class="year_month_label">Year</label>
+                <select class="transaction_list__type" name="transaction_list_year">
+                  <option value="2021">2021</option>
+                  <option value="2022" selected>2022</option>
+                </select>
+                <button type="submit" class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
+              </form>
+            </span>
+          </div>
+        </div>
+
+        <!-- MAIN TITLE ENDS HERE -->
+
+        <!-- MAIN CARDS STARTS HERE -->
+        <div class="bottom">
+          <div class="add">
+            <div class="add__container">
+
+              <form name="addForm" id="addForm" method="POST" action="{{ url_for('add') }}" novalidate>
+                <span style="margin-right: 10px; color: #2e4a66; font-size:20px; font-weight: 600;">Add transaction
+                </span>
+                <span style="margin-right: 10px; color: #2e4a66; font-size:20px; font-weight: 600;"><i
+                    class="fa fa-arrow-right" aria-hidden="true"></i></span>
+                <input class="add__date" name="date" type="date" />
+                <select class="add__type" name="transaction_type">
+                  <option value="positive" >+</option>
+                  <option value="negative" selected >-</option>
+                </select>
+                <select class="add__category" name="category">
+                  <option value="food" selected>Food</option>
+                  <option value="travelling">Travelling</option>
+                  <option value="groceries">Groceries</option>
+                  <option value="Medicine">Medicines</option>
+                  <option value="bill">Monthly Bills</option>
+                  <option value="others">Others</option>
+                </select>
+                <input type="text" class="add__description" placeholder="Add description" name="description">
+                <input type="number" class="add__value" placeholder="Value" name="value">
+                <button type="submit" class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- MAIN CARDS ENDS HERE -->
+
+        <div class="list_container clearfix">
+          <div class="income">
+            <h2 class="icome__title">Income</h2>
+
+            <div class="income__list">
+              <div class="item clearfix" id="income-0">
+                <div class="item__date"><b>11/08/2022</b></div>
+                <div class="income_item__description">Monthly budget</div>
+                <div class="right clearfix">
+                  <div class="item__value">+ 12000</div>
+                  <div class="item__percentage">100.1%</div>
+                  <div class="item__delete">
+                    <form name="deleteForm" id="deleteForm" method="POST" action="{{ url_for('delete') }}" novalidate>
+                      <input type="hidden" name="transaction_id" value="32">
+                      <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="expenses">
+            <h2 class="expenses__title">Expenses</h2>
+
+            <div class="expenses__list">
+              <div class="item clearfix" id="expense-0">
+                <div class="item__date"><b>21/09/2021</b></div>
+                <div class="expense_item__description">
+                  <span class="item_category_tag"> Food </span>
+                  Pasta, Ice cream
+                </div>
+                <div class="right clearfix">
+                  <div class="item__value">- 120</div>
+                  <div class="item__percentage">22.1%</div>
+                  <div class="item__delete">
+                    <form name="deleteForm" id="deleteForm" method="POST" action="{{ url_for('delete') }}" novalidate>
+                      <input type="hidden" name="transaction_id" value="32">
+                      <button type="submit" class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item clearfix" id="expense-0">
+                <div class="item__date"><b>21/09/2021</b></div>
+                <div class="expense_item__description">
+                  <span class="item_category_tag"> Travel </span>
+                  Rickshaw, Bus
+                </div>
+                <div class="right clearfix">
+                  <div class="item__value">- 310</div>
+                  <div class="item__percentage">42.1%</div>
+                  <div class="item__delete">
+                    <form name="deleteForm" id="deleteForm" method="POST" action="{{ url_for('delete') }}" novalidate>
+                      <input type="hidden" name="transaction_id" value="32">
+                      <button type="submit" class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item clearfix" id="expense-0">
+                <div class="item__date"><b>21/09/2021</b></div>
+                <div class="expense_item__description">
+                  <span class="item_category_tag" class="tooltip"> Medicine </span>
+                  Zosert and others
+                </div>
+
+                <div class="right clearfix">
+                  <div class="item__value">- 310</div>
+                  <div class="item__percentage">42.1%</div>
+                  <div class="item__delete">
+                    <form name="deleteForm" id="deleteForm" method="POST" action="{{ url_for('delete') }}" novalidate>
+                      <input type="hidden" name="transaction_id" value="32">
+                      <button type="submit" class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHARTS STARTS HERE -->
+        <!-- <div class="charts">
+          <div class="charts__left">
+            <div class="charts__left__title">
+              <div>
+                <h1>Expenditure (% of Budget)</h1>
+                <p>In time (% of total days passed in current month)</i></p>
+              </div>
+            </div>
+            <div id="target1"></div>
+          </div>
+
+          <div class="charts__right">
+            <div class="charts__right__title">
+              <div>
+                <h1>Cumulative Expenditure MTD</h1>
+              </div>
+            </div>
+            <div id="target2"></div>
+          </div>
+        </div> -->
+        <!-- CHARTS ENDS HERE -->
+      </div>
+
+      <canvas id="clock" class="clock"></canvas>
+
+    </main>
+
+    <div id="sidebar">
+      <div class="sidebar__title">
+        <div class="sidebar__img">
+          <!-- <img src="assets/dgit-logo.png" alt="logo" style="width:15%; margin-right: 3%;" /> -->
+          <h3>Expense Tracker</h3>
+        </div>
+        <i onclick="closeSidebar()" class="fa fa-times" id="sidebarIcon" aria-hidden="true"></i>
+      </div>
+
+      <div class="sidebar__menu">
+        <div class="sidebar_link">
+          <i class="fa fa-home"></i>
+          <a href="{{url_for('index')}}">Dashboard</a>
+        </div>
+        <div class="sidebar_link active_menu_link">
+          <i class="fa-solid fa-dollar-sign"></i>
+          <a href="{{url_for('transactions')}}">Transactions</a>
+        </div>
+        <!-- <div class="sidebar_link">
+          <i class="fa fa-gear"></i>
+          <a href="settings.html">Settings</a>
+        </div> -->
+        <div class="sidebar__logout">
+          <i class="fa fa-power-off"></i>
+          <a href="{{url_for('logout')}}">Log out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='clock.js') }}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $(".add__type")
+        .change(function () {
+          if ($(".add__type").val() == "positive") {
+            $("select.add__category").hide();
+          } else {
+            $("select.add__category").show();
+          }
+        });
+    });
+  </script>
+</body>
+
+</html>
