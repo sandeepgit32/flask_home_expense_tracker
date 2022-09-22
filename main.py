@@ -59,14 +59,25 @@ def login():
             if bcrypt_obj.check_password_hash(data.password, p): 
                 session['logged_in'] = True
                 session['user'] = u # Store the username in session variable for display after redirection
+                session['name'] = data.name
+                session['surname'] = data.surname
+                session['last_login_time'] = data.last_login_time
+                session['current_login_time'] = datetime.now()
                 return redirect(url_for('index'))
         return render_template('login.html', message="Incorrect Details!")
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
+    user_data = UserModel.query.filter_by(username=session['user']).first()
+    user_data.last_login_time = session.get('current_login_time')
+    db.session.commit()
     session['logged_in'] = False
     session['user'] = None
+    session['name'] = None
+    session['surname'] = None
+    session['last_login_time'] = None
+    session['current_login_time'] = None
     return redirect(url_for('index'))
 
 
@@ -78,13 +89,24 @@ def logout():
 @app.route('/')
 @authentication_required
 def index():
-    current_date = date.today()
-    current_month_text = current_date.strftime("%B")
-    display_month_year = f'{current_month_text}-{current_date.year}'
+    return render_template('index.html')
+
+
+@app.route('/transactions', methods=['GET', 'POST'])
+@authentication_required
+def transactions():
+    if request.method == 'GET':
+        current_date = date.today()
+        transaction_year, transaction_month = current_date.year, current_date.month
+    elif request.method == 'POST':
+        transaction_year, transaction_month = request.form['transaction_list_year'], \
+            request.form['transaction_list_month']
+        # current_month_text = current_date.strftime("%B")
+
     positive_transactions = TransactionModel.find_by_year_month_type(
         transaction_type='positive',
-        transaction_year=current_date.year,
-        transaction_month=current_date.month,
+        transaction_year=transaction_year,
+        transaction_month=transaction_month,
         user=session['user']
     )
     if positive_transactions is None:
@@ -95,8 +117,8 @@ def index():
 
     negative_transactions = TransactionModel.find_by_year_month_type(
         transaction_type='negative',
-        transaction_year=current_date.year,
-        transaction_month=current_date.month,
+        transaction_year=transaction_year,
+        transaction_month=transaction_month,
         user=session['user']
     )
     if negative_transactions is None:
@@ -104,47 +126,36 @@ def index():
         total_expense = 0
     else:
         total_expense = round(sum([x.value for x in negative_transactions]), 1)
-    percentage_list = []
+
+    total_income = round(sum([x.value for x in positive_transactions]), 1)
+    income_percentage_list = [-round(x.value*100/total_income, 1) for x in positive_transactions]
     if total_budget == 0:
-        total_val = round(sum([x.value for x in negative_transactions]), 1)
-        percentage_list = [-round(x.value*100/total_val, 1) for x in negative_transactions]
+        total_expense = round(sum([x.value for x in negative_transactions]), 1)
+        expense_percentage_list = [-round(x.value*100/total_expense, 1) for x in negative_transactions]
     else:
-        percentage_list = [round(x.value*100/total_budget, 1) for x in negative_transactions]
-    if total_budget == 0:
-        overall_percentage = '--'
-    else:
-        overall_percentage = round(total_expense*100/total_budget, 1)
-    if total_budget >= total_expense:
-        available_budget = '+{:,}'.format(round(total_budget-total_expense, 1))
-    elif total_budget < total_expense:
-        available_budget = '-{:,}'.format(round(total_expense-total_budget, 1))
+        expense_percentage_list = [round(x.value*100/total_budget, 1) for x in negative_transactions]
 
-    return render_template('index.html', positive_transactions=positive_transactions, \
-        negative_transactions_percentages=zip(negative_transactions, percentage_list),\
-        total_budget='{:,}'.format(total_budget), total_expense='{:,}'.format(total_expense), \
-        overall_percentage=overall_percentage, available_budget=available_budget, 
-        display_month_year=display_month_year, \
-        today=f'{current_date.year}-{current_date.month}-{current_date.day}', user=session['user'])
-
-
-@app.route('/transactions')
-@authentication_required
-def transactions():
-    return render_template('transactions.html')
+    return render_template('transactions.html', 
+        positive_transactions_percentages=zip(positive_transactions, income_percentage_list), \
+        negative_transactions_percentages=zip(negative_transactions, expense_percentage_list),\
+        transaction_year=transaction_year,
+        transaction_month=transaction_month, 
+        user=session['user'],
+        name_display=f'{session["name"]} {session["surname"]}')
     
 
 @app.route('/add', methods=['GET', 'POST'])
 @authentication_required
 def add():
     if request.method == 'GET':
-        return redirect(url_for('index'))
+        return redirect(url_for('transactions'))
     else:
         selected_date = request.form['date']
         selected_year, selected_month, selected_day = selected_date.split('-')
         
         if request.form['description'] == '':
             flash('No description entered!')
-            return redirect(url_for('index'))
+            return redirect(url_for('transactions'))
         else:
             description = request.form['description']
 
@@ -152,7 +163,7 @@ def add():
             inserted_value = float(request.form['value'])
         except:
             flash('You have provided an invalid value!')
-            return redirect(url_for('index'))
+            return redirect(url_for('transactions'))
 
         transaction_item = TransactionModel(
             user=session['user'],
@@ -165,19 +176,19 @@ def add():
             value=round(inserted_value, 1)
         )
         TransactionModel.save_to_db(transaction_item)
-        return redirect(url_for('index'))
+        return redirect(url_for('transactions'))
 
 
 @app.route('/delete', methods=['GET','POST'])
 @authentication_required
 def delete():
     if request.method == 'GET':
-        return redirect(url_for('index'))
+        return redirect(url_for('transactions'))
     else:
         transaction_id = request.form.get("transaction_id")
         transaction = TransactionModel.find_by_id(id=transaction_id)
         TransactionModel.delete_from_db(transaction)
-        return redirect(url_for('index'))
+        return redirect(url_for('transactions'))
 
 
 if __name__ == '__main__':

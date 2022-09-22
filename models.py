@@ -30,7 +30,7 @@ class TransactionModel(db.Model):
     transaction_year = db.Column(db.Integer, nullable=False)
     transaction_type = db.Column(db.String(10), nullable=False) # 'positive'/'negative'
     storing_datetime = db.Column(db.DateTime, nullable=False)
-    category = db.Column(db.String(20), nullable=False)
+    category = db.Column(db.String(20), nullable=True)
     value = db.Column(db.Float(precision=2), nullable=False)
 
     @classmethod
