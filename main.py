@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from functools import wraps
 from app import create_app
 from db import db
+from utils import *
 
 app = create_app(os.environ.get("FLASK_ENV"))
 bcrypt_obj = Bcrypt(app)
@@ -89,6 +90,7 @@ def logout():
 @app.route('/')
 @authentication_required
 def index():
+    x = get_from_transaction_monthly_income_value('sandip', 2022, 9)
     return render_template('index.html')
 
 
@@ -182,6 +184,16 @@ def add():
             value=round(inserted_value, 1)
         )
         TransactionModel.save_to_db(transaction_item)
+
+        # TODO: Use task queue for this
+        if request.form['transaction_type'] == 'positive':
+            update_monthly_income_value(session['user'], int(selected_year), int(selected_month))
+            update_daily_income_value(session['user'], int(selected_year), int(selected_day))
+        elif request.form['transaction_type'] == 'negative':
+            update_monthly_expenditure_value(session['user'], int(selected_year), int(selected_month), \
+                category)
+            update_daily_expenditure_value(session['user'], int(selected_year), int(selected_month), \
+                int(selected_day))
         return redirect(url_for('transactions'))
 
 
@@ -194,6 +206,18 @@ def delete():
         transaction_id = request.form.get("transaction_id")
         transaction = TransactionModel.find_by_id(id=transaction_id)
         TransactionModel.delete_from_db(transaction)
+        
+        # TODO: Use task queue for this
+        if transaction.transaction_type == 'positive':
+            update_monthly_income_value(session['user'], int(transaction.transaction_year), \
+                int(transaction.transaction_month))
+            update_daily_income_value(session['user'], int(transaction.transaction_year), \
+                int(transaction.transaction_month))
+        elif transaction.transaction_type == 'negative':
+            update_monthly_expenditure_value(session['user'], int(transaction.transaction_year), \
+                int(transaction.transaction_month), transaction.category)
+            update_daily_expenditure_value(session['user'], int(transaction.transaction_year), \
+                int(transaction.transaction_month), int(transaction.transaction_day))
         return redirect(url_for('transactions'))
 
 
