@@ -53,3 +53,21 @@ class TransactionModel(db.Model):
     def delete_from_db(self) -> None:
         db.session.delete(self)
         db.session.commit()
+
+
+class DailySummarizationModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(100), nullable=False)
+    transaction_day = db.Column(db.Integer, nullable=False)
+    transaction_year_month = db.Column(db.String(10), nullable=False)
+    transaction_type = db.Column(db.String(10), nullable=False) # 'positive'/'negative'
+    value = db.Column(db.Float(precision=2), nullable=False)
+
+
+class MonthlySummarizationModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(100), nullable=False)
+    transaction_year_month = db.Column(db.String(10), nullable=False)
+    transaction_type = db.Column(db.String(10), nullable=False) # 'positive'/'negative'
+    category = db.Column(db.String(20), nullable=True)
+    value = db.Column(db.Float(precision=2), nullable=False)
