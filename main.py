@@ -9,6 +9,7 @@ from functools import wraps
 from app import create_app
 from db import db
 from utils import *
+from add_dummy_data import *
 
 app = create_app(os.environ.get("FLASK_ENV"))
 bcrypt_obj = Bcrypt(app)
@@ -90,7 +91,6 @@ def logout():
 @app.route('/')
 @authentication_required
 def index():
-    x = get_from_transaction_monthly_income_value('sandip', 2022, 9)
     return render_template('index.html')
 
 
@@ -130,7 +130,7 @@ def transactions():
         total_expense = round(sum([x.value for x in negative_transactions]), 1)
 
     total_income = round(sum([x.value for x in positive_transactions]), 1)
-    income_percentage_list = [-round(x.value*100/total_income, 1) for x in positive_transactions]
+    income_percentage_list = [round(x.value*100/total_income, 1) for x in positive_transactions]
     if total_budget == 0:
         total_expense = round(sum([x.value for x in negative_transactions]), 1)
         expense_percentage_list = [-round(x.value*100/total_expense, 1) for x in negative_transactions]
@@ -188,7 +188,8 @@ def add():
         # TODO: Use task queue for this
         if request.form['transaction_type'] == 'positive':
             update_monthly_income_value(session['user'], int(selected_year), int(selected_month))
-            update_daily_income_value(session['user'], int(selected_year), int(selected_day))
+            update_daily_income_value(session['user'], int(selected_year), int(selected_month), \
+                int(selected_day))
         elif request.form['transaction_type'] == 'negative':
             update_monthly_expenditure_value(session['user'], int(selected_year), int(selected_month), \
                 category)
@@ -206,13 +207,13 @@ def delete():
         transaction_id = request.form.get("transaction_id")
         transaction = TransactionModel.find_by_id(id=transaction_id)
         TransactionModel.delete_from_db(transaction)
-        
+
         # TODO: Use task queue for this
         if transaction.transaction_type == 'positive':
             update_monthly_income_value(session['user'], int(transaction.transaction_year), \
                 int(transaction.transaction_month))
             update_daily_income_value(session['user'], int(transaction.transaction_year), \
-                int(transaction.transaction_month))
+                int(transaction.transaction_month), int(transaction.transaction_month))
         elif transaction.transaction_type == 'negative':
             update_monthly_expenditure_value(session['user'], int(transaction.transaction_year), \
                 int(transaction.transaction_month), transaction.category)
@@ -221,6 +222,13 @@ def delete():
         return redirect(url_for('transactions'))
 
 
+@app.route('/dummy')
+@authentication_required
+def dummy():
+    create_dummy_data()
+    return redirect(url_for('index'))
+
+
 if __name__ == '__main__':
-    # db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)
+    

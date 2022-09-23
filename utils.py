@@ -185,7 +185,7 @@ def update_daily_income_value(user, current_year, current_month, current_day):
     if value is not None:
         insert_query = f'''
         INSERT INTO daily_summarization_model(user, transaction_year_month, transaction_day, transaction_type, value)
-        VALUES('{user}','{time_bucket}', 'positive', {current_day}, {value})
+        VALUES('{user}','{time_bucket}', {current_day}, 'positive', {value})
         '''
         db.engine.execute(insert_query)
 
