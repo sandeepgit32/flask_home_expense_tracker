@@ -236,7 +236,10 @@ var options = {
     }
   },
   xaxis: {
-    categories: Array.from({length: cumulative_expected_expenditure_day_wise.length}, (_, i) => i + 1)
+    categories: Array.from({length: cumulative_expected_expenditure_day_wise.length}, (_, i) => i + 1),
+    title: {
+      text: 'Days of the month'
+    }
   },
   tooltip: {
     x: {

@@ -115,10 +115,14 @@ def index():
     last_few_months_text = get_month_year_text_for_last_few_months_(current_date.year, current_date.month)
     category_wise_expenditure_MTD = get_from_summarization_category_wise_expenditure_MTD(session['user'], current_date.year, \
         current_date.month)
+    if session['last_login_time']:
+        last_login_time = session['last_login_time'].strftime('%I:%M:%S %p - %A, %B-%d, %Y')
+    else:
+        last_login_time = 'NA'
     return render_template('index.html',
         name_display=f'{session["name"]} {session["surname"]}',
         welcome_name=session["name"],
-        last_login_time = session['last_login_time'].strftime('%I:%M:%S %p - %A, %B-%d, %Y'),
+        last_login_time=last_login_time,
         available_budget='{:,}'.format(round(available_budget,1)),
         days_remaining=days_remaining,
         MTD_expenditure='{:,}'.format(round(MTD_expenditure,1)),

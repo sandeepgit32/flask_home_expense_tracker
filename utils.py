@@ -169,7 +169,15 @@ def get_from_summarization_month_wise_expenditure_last_few_months(user, current_
     ORDER BY transaction_year_month ASC;
     '''
     result = db.engine.execute(query).fetchall()
-    return [round(x[1], 1) if x[1] is not None else 0 for x in result]
+    result_dict = {x[0]:x[1] for x in result}
+    output = []
+    for time_bucket in time_bucket_list:
+        if result_dict.get(time_bucket):
+            output.append(round(result_dict.get(time_bucket), 1))
+        else:
+            output.append(0)
+
+    return output
 
 
 def get_from_summarization_month_wise_income_last_few_months(user, current_year, current_month):
