@@ -86,20 +86,20 @@ var options = {
   },
   dataLabels: {
     enabled: true,
-    offsetX: 0,
+    offsetY: -16,
     style: {
       fontSize: '10px',
-      colors: ['#fff']
+      colors: ['#008000', '#cc0000']
     }
   },
-  colors: ['#ff6666', '#00b300'],
+  colors: ['#00b300', '#ff6666'],
   stroke: {
     show: true,
     width: 1,
     colors: ['#666666']
   },
   fill: {
-    opacity: 0.72
+    opacity: 0.5
   },
   tooltip: {
     shared: true,
