@@ -28,9 +28,9 @@
                 <!-- <a href="settings.html">Settings</a> -->
             </div>
             <div class="navbar__right">
-                <a href="#">
+                <!-- <a href="#">
                     <i class="fa fa-search" aria-hidden="true"></i>
-                </a>
+                </a> -->
                 <a href="#" id="myBtn">
                     <i class="fa fa-clock-o" aria-hidden="true"></i>
                 </a>
@@ -55,6 +55,16 @@
         <main>
             <div class="main__container">
                 <!-- MAIN TITLE STARTS HERE -->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class=flashes>
+                            {% for message in messages %}
+                                <div><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
 
                 <div class="main__title">
                     <div class="main__greeting">
@@ -208,12 +218,10 @@
         </div>
     </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="{{ url_for('static', filename='clock.js') }}"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
     <script>
         $(document).ready(function () {
             $(".add__type")

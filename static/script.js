@@ -1,3 +1,29 @@
+// Get the modal for clock
+var modal = document.getElementById("myModal");
+    
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("modal-close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
 // This is for able to see chart. We are using Apex Chart. U can check the documentation of Apex Charts too..
 // Last six months income and expenditure
 var income_last_few_months = JSON.parse(document.getElementById("apex1-data1")
@@ -173,30 +199,3 @@ var options = {
 
 var chart = new ApexCharts(document.querySelector("#target2"), options);
 chart.render();
-
-
-// Get the modal
-var modal = document.getElementById("myModal");
-    
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("modal-close")[0];
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
