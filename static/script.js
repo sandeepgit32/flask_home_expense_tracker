@@ -1,11 +1,20 @@
 // This is for able to see chart. We are using Apex Chart. U can check the documentation of Apex Charts too..
+// Last six months income and expenditure
+var income_last_six_months = JSON.parse(document.getElementById("apex1-data1")
+  .getAttribute('income_last_six_months'));
+var expenditure_last_six_months = JSON.parse(document.getElementById("apex1-data2")
+  .getAttribute('expenditure_last_six_months'));
+// Template variable string has ' (single quotes) instead of " (double quotes) 
+// Before parsing the sting using JSON.parse, we need to conver all ' (single quotes) to " (double quotes) 
+var last_six_months_text = JSON.parse(document.getElementById("apex1-data3")
+  .getAttribute('last_six_months_text').replaceAll("\'","\""));
 var options = {
   series: [{
     name: 'Total Budget',
-    data: [10000, 10000, 10000, 10000, 10000, 10000, 10000]
+    data: income_last_six_months
   }, {
     name: 'Expenditure',
-    data: [5553, 8832, 7633, 10052, 12513, 8944, 732]
+    data: expenditure_last_six_months
   }],
   chart: {
     type: 'area',
@@ -25,7 +34,7 @@ var options = {
     }
   },
   xaxis: {
-    categories: ['Jan-22', 'Feb-22', 'Mar-22', 'Apr-22', 'May-22', 'Jun-22', 'Jul-22'],
+    categories: last_six_months_text,
   },
 };
 
@@ -33,13 +42,17 @@ var chart = new ApexCharts(document.querySelector("#apex1"), options);
 chart.render();
 
 
+
+// Category-wise MTD expenditure
+var category_wise_expenditure_MTD = JSON.parse(document.getElementById("apex2-data1")
+  .getAttribute('category_wise_expenditure_MTD').replaceAll("\'","\""));
 var options = {
-  series: [44, 55, 2, 17, 15, 44],
+  series: category_wise_expenditure_MTD['MTD_expenditure'],
   chart: {
   type: 'donut',
   height: 400
 },
-labels: ['Food', 'Travelling', 'Groceries', 'Medicine', 'Bills', 'Others'],
+labels: category_wise_expenditure_MTD['category'],
 responsive: [{
   breakpoint: 480,
   options: {
@@ -77,10 +90,14 @@ function closeSidebar() {
 }
 
 
-// Radial chart
+// Expenditure percent and time percent
+current_expenditure_percent = JSON.parse(document.getElementById("target1-data1")
+  .getAttribute('current_expenditure_percent'))
+days_passed_percent = JSON.parse(document.getElementById("target1-data2")
+  .getAttribute('days_passed_percent'))
 
-var options = {
-  series: [55, 44],
+  var options = {
+  series: [current_expenditure_percent, days_passed_percent],
   chart: {
     height: 400,
     type: 'radialBar',
@@ -99,7 +116,7 @@ var options = {
           label: 'Expenditure',
           formatter: function (w) {
             // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
-            return 55 + '%'
+            return current_expenditure_percent + '%'
           }
         }
       }
@@ -117,7 +134,6 @@ cumulative_expenditure_day_wise_MTD = JSON.parse(document.getElementById("target
   .getAttribute('cumulative_expenditure_day_wise_mtd'))
 cumulative_expected_expenditure_day_wise = JSON.parse(document.getElementById("target2-data2")
   .getAttribute('cumulative_expected_expenditure_day_wise'))
-console.log('cumulative_expected_expenditure_day_wise', cumulative_expected_expenditure_day_wise)
 var options = {
   series: [{
     name: 'Expected expenditure',
@@ -154,9 +170,6 @@ var options = {
     },
   },
 };
-
-var chart = new ApexCharts(document.querySelector("#chart"), options);
-chart.render();
 
 var chart = new ApexCharts(document.querySelector("#target2"), options);
 chart.render();

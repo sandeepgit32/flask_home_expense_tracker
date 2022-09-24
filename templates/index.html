@@ -46,7 +46,7 @@
         <a href="#">
           <!-- <img width="30" src="assets/avatar.svg" alt="" />
           <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
-          <span class="name_label">Sandip Karar</span>
+          <span class="name_label">{{ name_display }}</span>
         </a>
       </div>
     </nav>
@@ -58,8 +58,8 @@
         <div class="main__title">
           <!-- <img src="assets/hello.svg" alt="" /> -->
           <div class="main__greeting">
-            <h1>Welcome Sandip</h1>
-            <p>Last login: 09:33:28 - Saturday, 23rd September, 2021</p>
+            <h1>Welcome {{ welcome_name }}</h1>
+            <p>Last login: {{ last_login_time }}</p>
           </div>
         </div>
 
@@ -73,7 +73,7 @@
               <p class="text-primary-p">Available Budget</p>
               <span class="font-bold text-title">
                 <i class="fa fa-rupee-sign"></i>
-                2,914.0
+                {{ available_budget }}
               </span>
             </div>
           </div>
@@ -82,7 +82,7 @@
             <i class="fa fa-calendar fa-2x text-lightblue" aria-hidden="true"></i>
             <div class="card_inner">
               <p class="text-primary-p">Days remaining in month</p>
-              <span class="font-bold text-title">11</span>
+              <span class="font-bold text-title">{{ days_remaining }}</span>
             </div>
           </div>
 
@@ -92,7 +92,7 @@
               <p class="text-primary-p">MTD Expenditure</p>
               <span class="font-bold text-title">
                 <i class="fa fa-rupee-sign"></i>
-                28,811.0
+                {{ MTD_expenditure }}
               </span>
             </div>
           </div>
@@ -103,7 +103,7 @@
               <p class="text-primary-p">YTD Expenditure</p>
               <span class="font-bold text-title">
                 <i class="fa fa-rupee-sign"></i>
-                1,103.0
+                {{ YTD_expenditure }}
               </span>
             </div>
             
@@ -120,6 +120,8 @@
                 <p>In time (% of total days passed in current month)</i></p>
               </div>
             </div>
+            <meta id="target1-data1" current_expenditure_percent={{ current_expenditure_percent }}>
+            <meta id="target1-data2" days_passed_percent={{ days_passed_percent }}>
             <div id="target1"></div>
           </div>
 
@@ -148,6 +150,9 @@
                 </h1>
               </div>
             </div>
+            <meta id="apex1-data1" income_last_six_months="{{ income_last_six_months | tojson }}">
+            <meta id="apex1-data2" expenditure_last_six_months="{{ expenditure_last_six_months | tojson }}">
+            <meta id="apex1-data3" last_six_months_text="{{ last_six_months_text|safe }}">
             <div id="apex1"></div>
           </div>
 
@@ -157,6 +162,7 @@
                 <h1>Category Wise Expenditure MTD (%)</h1>
               </div>
             </div>
+            <meta id="apex2-data1" category_wise_expenditure_MTD="{{ category_wise_expenditure_MTD }}">
             <div id="apex2"></div>
           </div>
         </div>
