@@ -194,6 +194,10 @@ def add():
         return redirect(url_for('transactions'))
     else:
         selected_date = request.form['date']
+        selected_date_format = datetime.strptime(selected_date, '%Y-%m-%d').date()
+        if selected_date_format > date.today():
+            flash('Selecting a future date is not allowed!')
+            return redirect(url_for('transactions'))
         selected_year, selected_month, selected_day = selected_date.split('-')
         
         if request.form['description'] == '':
