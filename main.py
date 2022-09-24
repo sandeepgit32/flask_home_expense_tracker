@@ -66,22 +66,21 @@ def login():
                 session['name'] = user_data.name
                 session['surname'] = user_data.surname
                 session['last_login_time'] = user_data.last_login_time
-                session['current_login_time'] = datetime.now()
+                # Update the last_login_time in the database as the current log_in time, so for the 
+                # next login this will be displayed as the last_login_time. 
+                user_data.last_login_time = datetime.now()
+                db.session.commit()
                 return redirect(url_for('index'))
         return render_template('login.html', message="Incorrect Details!")
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    user_data = UserModel.query.filter_by(username=session['user']).first()
-    user_data.last_login_time = session.get('current_login_time')
-    db.session.commit()
     session['logged_in'] = False
     session['user'] = None
     session['name'] = None
     session['surname'] = None
     session['last_login_time'] = None
-    session['current_login_time'] = None
     return redirect(url_for('index'))
 
 
@@ -115,7 +114,6 @@ def index():
     last_few_months_text = get_month_year_text_for_last_few_months_(current_date.year, current_date.month)
     category_wise_expenditure_MTD = get_from_summarization_category_wise_expenditure_MTD(session['user'], current_date.year, \
         current_date.month)
-    print('>---------------->', session)
     return render_template('index.html',
         name_display=f'{session["name"]} {session["surname"]}',
         welcome_name=session["name"],

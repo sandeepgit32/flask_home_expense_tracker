@@ -236,7 +236,7 @@ var options = {
     }
   },
   xaxis: {
-    categories: Array.from({length: 30}, (_, i) => i + 1)
+    categories: Array.from({length: cumulative_expected_expenditure_day_wise.length}, (_, i) => i + 1)
   },
   tooltip: {
     x: {
