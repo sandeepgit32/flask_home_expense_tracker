@@ -7,8 +7,5 @@ This web app was built with tutorial of Jonas Schmedtmann's Complete Javascript 
 
 
 TODO
-Flash messages in transaction page to implement
 Automatic session timer
-Include leap year
 Convert last 6 months chart to grouped bar
-clockicon in navbar not working in transaction
