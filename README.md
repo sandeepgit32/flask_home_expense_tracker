@@ -10,3 +10,4 @@ TODO
 Flash messages in transaction page to implement
 Automatic session timer
 Include leap year
+Convert last 6 months chart to grouped bar

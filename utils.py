@@ -48,16 +48,17 @@ def get_YTD_time_buckets(current_year, current_month):
 def get_cumulative_list(a_list):
     output = []
     for ind, _ in enumerate(a_list):
-        output.append(sum(a_list[:(ind+1)]))
+        output.append(round(sum(a_list[:(ind+1)]), 1))
     return output
 
 
-def get_last_six_months_year_month_time_bucket(current_year, current_month):
-    if current_month >= 6:
+def get_last_few_months_year_month_time_bucket(current_year, current_month):
+    past_num_months = 12
+    if current_month >= past_num_months:
         return [create_year_month_time_bucket(current_year, y) for y in range(current_month-5, current_month+1)]
     else:
         time_buckets_in_CY = [create_year_month_time_bucket(current_year, y) for y in range(1, current_month+1)]
-        num_months_LY = 6 - current_month
+        num_months_LY = past_num_months - current_month
         time_buckets_in_LY = [create_year_month_time_bucket(current_year-1, y) for y in range(12-num_months_LY+1, 13)]
         return time_buckets_in_LY + time_buckets_in_CY
 
@@ -68,8 +69,8 @@ def time_bucket_to_month_year_text(time_bucket):
     return f"{MONTH_MAP[month]}-{year[2:]}"
 
 
-def get_month_year_text_for_last_six_months_(current_year, current_month):
-    time_bucket_list = get_last_six_months_year_month_time_bucket(current_year, current_month)
+def get_month_year_text_for_last_few_months_(current_year, current_month):
+    time_bucket_list = get_last_few_months_year_month_time_bucket(current_year, current_month)
     return [time_bucket_to_month_year_text(time_bucket) for time_bucket in time_bucket_list]
 
 
@@ -148,12 +149,12 @@ def get_from_summarization_cumulative_expenditure_day_wise_MTD(user, current_yea
 def get_from_summarization_cumulative_expected_expenditure_day_wise(user, current_year, current_month):
     total_budget = get_from_summarization_current_month_income(user, current_year, current_month)
     num_of_days_in_current_month = get_month_wise_day_count(current_month)
-    value_list = [total_budget*x/num_of_days_in_current_month for x in range(1, num_of_days_in_current_month+1)]
+    value_list = [round(total_budget*x/num_of_days_in_current_month, 1) for x in range(1, num_of_days_in_current_month+1)]
     return value_list
 
 
-def get_from_summarization_month_wise_expenditure_last_six_months(user, current_year, current_month):
-    time_bucket_list = get_last_six_months_year_month_time_bucket(current_year, current_month)
+def get_from_summarization_month_wise_expenditure_last_few_months(user, current_year, current_month):
+    time_bucket_list = get_last_few_months_year_month_time_bucket(current_year, current_month)
     query = f'''
     SELECT transaction_year_month, SUM(value) FROM monthly_summarization_model
     WHERE user = '{user}'
@@ -163,11 +164,11 @@ def get_from_summarization_month_wise_expenditure_last_six_months(user, current_
     ORDER BY transaction_year_month ASC;
     '''
     result = db.engine.execute(query).fetchall()
-    return [x[1] if x[1] is not None else 0 for x in result]
+    return [round(x[1], 1) if x[1] is not None else 0 for x in result]
 
 
-def get_from_summarization_month_wise_income_last_six_months(user, current_year, current_month):
-    time_bucket_list = get_last_six_months_year_month_time_bucket(current_year, current_month)
+def get_from_summarization_month_wise_income_last_few_months(user, current_year, current_month):
+    time_bucket_list = get_last_few_months_year_month_time_bucket(current_year, current_month)
     query = f'''
     SELECT transaction_year_month, SUM(value) FROM monthly_summarization_model
     WHERE user = '{user}'
@@ -177,7 +178,7 @@ def get_from_summarization_month_wise_income_last_six_months(user, current_year,
     ORDER BY transaction_year_month ASC;
     '''
     result = db.engine.execute(query).fetchall()
-    return [x[1] if x[1] is not None else 0 for x in result]
+    return [round(x[1], 1) if x[1] is not None else 0 for x in result]
 
 
 def get_from_summarization_category_wise_expenditure_MTD(user, current_year, current_month):
@@ -199,9 +200,6 @@ def get_from_summarization_category_wise_expenditure_MTD(user, current_year, cur
             output['MTD_expenditure'].append(round(x[1], 1))
         else:
             output['MTD_expenditure'].append(0)
-    # total_MTD_expenditure = sum(output['MTD_expenditure'])
-    # MTD_expenditure_percent = [round(x*100/total_MTD_expenditure, 1) for x in output['MTD_expenditure']]
-    # output['MTD_expenditure_percent'] = MTD_expenditure_percent
     return output
 
 
@@ -285,6 +283,7 @@ def update_daily_income_value(user, current_year, current_month, current_day):
         VALUES('{user}','{time_bucket}', {current_day}, 'positive', {value})
         '''
         db.engine.execute(insert_query)
+    # print(value, delete_query, insert_query)
 
 
 def update_daily_expenditure_value(user, current_year, current_month, current_day):

@@ -1,20 +1,20 @@
 // This is for able to see chart. We are using Apex Chart. U can check the documentation of Apex Charts too..
 // Last six months income and expenditure
-var income_last_six_months = JSON.parse(document.getElementById("apex1-data1")
-  .getAttribute('income_last_six_months'));
-var expenditure_last_six_months = JSON.parse(document.getElementById("apex1-data2")
-  .getAttribute('expenditure_last_six_months'));
+var income_last_few_months = JSON.parse(document.getElementById("apex1-data1")
+  .getAttribute('income_last_few_months'));
+var expenditure_last_few_months = JSON.parse(document.getElementById("apex1-data2")
+  .getAttribute('expenditure_last_few_months'));
 // Template variable string has ' (single quotes) instead of " (double quotes) 
 // Before parsing the sting using JSON.parse, we need to conver all ' (single quotes) to " (double quotes) 
-var last_six_months_text = JSON.parse(document.getElementById("apex1-data3")
-  .getAttribute('last_six_months_text').replaceAll("\'","\""));
+var last_few_months_text = JSON.parse(document.getElementById("apex1-data3")
+  .getAttribute('last_few_months_text').replaceAll("\'","\""));
 var options = {
   series: [{
     name: 'Total Budget',
-    data: income_last_six_months
+    data: income_last_few_months
   }, {
     name: 'Expenditure',
-    data: expenditure_last_six_months
+    data: expenditure_last_few_months
   }],
   chart: {
     type: 'area',
@@ -34,7 +34,7 @@ var options = {
     }
   },
   xaxis: {
-    categories: last_six_months_text,
+    categories: last_few_months_text,
   },
 };
 

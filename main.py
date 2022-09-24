@@ -97,20 +97,22 @@ def index():
     available_budget = current_month_budget - MTD_expenditure
     days_remaining = get_month_wise_day_count(current_date.month) - current_date.day
     days_passed_percent = round(current_date.day*100/get_month_wise_day_count(current_date.month), 1)
-    current_expenditure_percent = round(MTD_expenditure*100/current_month_budget, 1)
+    if current_month_budget == 0:
+        current_expenditure_percent = 0
+    else:
+        current_expenditure_percent = round(MTD_expenditure*100/current_month_budget, 1)
     YTD_expenditure = get_from_summarization_YTD_expenditure(session['user'], current_date.year, current_date.month, current_date.day)
     cumulative_expenditure_day_wise_MTD = get_from_summarization_cumulative_expenditure_day_wise_MTD(
         session['user'], current_date.year, current_date.month, current_date.day)
     cumulative_expected_expenditure_day_wise = get_from_summarization_cumulative_expected_expenditure_day_wise(
         session['user'], current_date.year, current_date.month)
-    income_last_six_months = get_from_summarization_month_wise_income_last_six_months(session['user'], current_date.year, \
+    income_last_few_months = get_from_summarization_month_wise_income_last_few_months(session['user'], current_date.year, \
         current_date.month)
-    expenditure_last_six_months = get_from_summarization_month_wise_expenditure_last_six_months(session['user'], current_date.year, \
+    expenditure_last_few_months = get_from_summarization_month_wise_expenditure_last_few_months(session['user'], current_date.year, \
         current_date.month)
-    last_six_months_text = get_month_year_text_for_last_six_months_(current_date.year, current_date.month)
+    last_few_months_text = get_month_year_text_for_last_few_months_(current_date.year, current_date.month)
     category_wise_expenditure_MTD = get_from_summarization_category_wise_expenditure_MTD(session['user'], current_date.year, \
         current_date.month)
-    print('///////////////////////////////////////////', category_wise_expenditure_MTD)
     return render_template('index.html',
         name_display=f'{session["name"]} {session["surname"]}',
         welcome_name=session["name"],
@@ -123,9 +125,9 @@ def index():
         current_expenditure_percent=current_expenditure_percent,
         cumulative_expenditure_day_wise_MTD=cumulative_expenditure_day_wise_MTD,
         cumulative_expected_expenditure_day_wise=cumulative_expected_expenditure_day_wise,
-        income_last_six_months=income_last_six_months,
-        expenditure_last_six_months=expenditure_last_six_months,
-        last_six_months_text=last_six_months_text,
+        income_last_few_months=income_last_few_months,
+        expenditure_last_few_months=expenditure_last_few_months,
+        last_few_months_text=last_few_months_text,
         category_wise_expenditure_MTD=category_wise_expenditure_MTD)
 
 
@@ -248,7 +250,7 @@ def delete():
             update_monthly_income_value(session['user'], int(transaction.transaction_year), \
                 int(transaction.transaction_month))
             update_daily_income_value(session['user'], int(transaction.transaction_year), \
-                int(transaction.transaction_month), int(transaction.transaction_month))
+                int(transaction.transaction_month), int(transaction.transaction_day))
         elif transaction.transaction_type == 'negative':
             update_monthly_expenditure_value(session['user'], int(transaction.transaction_year), \
                 int(transaction.transaction_month), transaction.category)

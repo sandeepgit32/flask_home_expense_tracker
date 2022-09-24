@@ -1,5 +1,5 @@
 import random
-from datetime import datetime
+from datetime import datetime, date
 # from db import db
 from utils import *
 from models import TransactionModel
@@ -70,18 +70,22 @@ def create_transaction_item(user, transaction_year, transaction_month, transacti
 
 def create_dummy_data():
     user = 'sandip'
-    for year in [2021, 2022]:
+    current_date = date.today()
+    for year in [current_date.year-1, current_date.year]:
         for month in range(1, 13):
             for day in range(1, month_wise_day_count[month]+1):
+                if (year == current_date.year) and (month == current_date.month):
+                    if day > current_date.day:
+                        return None
                 if day == 1:
                     income_transaction = create_transaction_item(user, year, month, day, 'positive', \
-                        f'Budget {year} month_{month}', random.choice([10000, 15000]))
+                        f'Budget {year} month_{month}', random.choice([20000, 22000, 24000]))
                     print(f'Income transaction added for year_{year}_month_{month}')
                     add_dummy_item(income_transaction)
-                num_transactions = random.choice([1,2,2,3,3,3,4,4,5,5,6])
+                num_transactions = random.choice([1,1,1,2,2,2,3,3,3,4,4,5,5,6])
                 for count in range(num_transactions):
                     expense_transaction = create_transaction_item(user, year, month, day, 'negative', \
-                        f'Expense for {day} {count}', round(random.randint(10, 1500), 1))
+                        f'Expense for {day} {count}', round(random.randint(10, 500), 1))
                     print(f'Expense transaction added for year_{year}_month_{month}_day_{day}_{count}')
                     add_dummy_item(expense_transaction)
 
