@@ -91,7 +91,15 @@ def logout():
 @app.route('/')
 @authentication_required
 def index():
-    return render_template('index.html')
+    current_date = date.today()
+    cumulative_expenditure_day_wise_MTD = get_from_summarization_cumulative_expenditure_day_wise_MTD(
+        session['user'], current_date.year, current_date.month, current_date.day)
+    cumulative_expected_expenditure_day_wise = get_from_summarization_cumulative_expected_expenditure_day_wise(
+        session['user'], current_date.year, current_date.month)
+    print('>----cumulative_expected_expenditure_day_wise---->',cumulative_expected_expenditure_day_wise)
+    return render_template('index.html', 
+        cumulative_expenditure_day_wise_MTD=cumulative_expenditure_day_wise_MTD,
+        cumulative_expected_expenditure_day_wise=cumulative_expected_expenditure_day_wise)
 
 
 @app.route('/transactions', methods=['GET', 'POST'])

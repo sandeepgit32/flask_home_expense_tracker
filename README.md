@@ -9,3 +9,4 @@ This web app was built with tutorial of Jonas Schmedtmann's Complete Javascript 
 TODO
 Flash messages in transaction page to implement
 Automatic session timer
+Include leap year

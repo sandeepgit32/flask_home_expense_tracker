@@ -112,15 +112,21 @@ var chart = new ApexCharts(document.querySelector("#target1"), options);
 chart.render();
 
 
+// cumulative_expenditure_day_wise_MTD
+cumulative_expenditure_day_wise_MTD = JSON.parse(document.getElementById("target2-data1")
+  .getAttribute('cumulative_expenditure_day_wise_mtd'))
+cumulative_expected_expenditure_day_wise = JSON.parse(document.getElementById("target2-data2")
+  .getAttribute('cumulative_expected_expenditure_day_wise'))
+console.log('cumulative_expected_expenditure_day_wise', cumulative_expected_expenditure_day_wise)
 var options = {
   series: [{
     name: 'Expected expenditure',
-    data: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    data: cumulative_expected_expenditure_day_wise
   },
   {
     name: 'Actual expenditure',
     type: 'line',
-    data: [110, 320, 450, 480, 494, 520, 641]
+    data: cumulative_expenditure_day_wise_MTD
   }],
   chart: {
     height: 400,
@@ -140,7 +146,7 @@ var options = {
     }
   },
   xaxis: {
-    categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    categories: Array.from({length: 30}, (_, i) => i + 1)
   },
   tooltip: {
     x: {

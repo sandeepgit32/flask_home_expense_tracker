@@ -1,6 +1,23 @@
 from db import db
 
 
+def get_month_wise_day_count(month):
+    return {
+        1: 31,
+        2: 28,
+        3: 31,
+        4: 30,
+        5: 31,
+        6: 30,
+        7: 31,
+        8: 31,
+        9: 30,
+        10: 31,
+        11: 30,
+        12: 31
+    }[month]
+
+
 def create_year_month_time_bucket(current_year, current_month):
     if current_month <= 9:
         return f'{current_year}_0{current_month}'
@@ -55,17 +72,26 @@ def get_from_summarization_current_month_income(user, current_year, current_mont
         return None
 
 
-def get_from_summarization_cumulative_expenditure_day_wise_MTD(user, current_year, current_month):
+def get_from_summarization_cumulative_expenditure_day_wise_MTD(user, current_year, current_month, current_day):
     time_bucket = create_year_month_time_bucket(current_year, current_month)
     query = f'''
     SELECT transaction_day, value FROM daily_summarization_model
     WHERE user = '{user}'
     AND transaction_year_month = '{time_bucket}'
+    AND transaction_day <= {current_day}
     AND transaction_type = 'negative'
-    ORDER BY transaction_day AESC;
+    ORDER BY transaction_day ASC;
     '''
     result = db.engine.execute(query).fetchall()
-    return [x[1] for x in result]
+    value_list = [x[1] for x in result]
+    return get_cumulative_list(value_list)
+
+
+def get_from_summarization_cumulative_expected_expenditure_day_wise(user, current_year, current_month):
+    total_budget = get_from_summarization_current_month_income(user, current_year, current_month)
+    num_of_days_in_current_month = get_month_wise_day_count(current_month)
+    value_list = [total_budget*x/num_of_days_in_current_month for x in range(1, num_of_days_in_current_month+1)]
+    return value_list
 
 
 def get_from_summarization_month_wise_expenditure_last_six_months(user, current_year, current_month):
@@ -76,7 +102,7 @@ def get_from_summarization_month_wise_expenditure_last_six_months(user, current_
     AND transaction_year_month IN {tuple(time_bucket_list)}
     AND transaction_type = 'negative'
     GROUP BY transaction_year_month
-    ORDER BY transaction_year_month AESC;
+    ORDER BY transaction_year_month ASC;
     '''
     result = db.engine.execute(query).fetchall()
     return [x[1] for x in result]
@@ -90,7 +116,7 @@ def get_from_summarization_month_wise_income_last_six_months(user, current_year,
     AND transaction_year_month IN {tuple(time_bucket_list)}
     AND transaction_type = 'positive'
     GROUP BY transaction_year_month
-    ORDER BY transaction_year_month AESC;
+    ORDER BY transaction_year_month ASC;
     '''
     result = db.engine.execute(query).fetchall()
     return [x[1] for x in result]
