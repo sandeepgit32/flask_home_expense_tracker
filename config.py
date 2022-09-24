@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 # basedir = path.abspath(path.dirname(__file__))
 # load_dotenv(path.join(basedir, '.env'))
 
@@ -14,6 +15,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAX_CONTENT_PATH = 10 * 1024 * 1024  # restrict max upload image size to 10MB
     SQLALCHEMY_ECHO = True
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=15) # Define the validity of a session for 15 minutes
 
 
 class ProdConfig(Config):

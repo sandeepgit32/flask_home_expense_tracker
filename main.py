@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv('.env', verbose=True)
 from flask import render_template, request, redirect, url_for, session, flash
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from models import UserModel, TransactionModel
 from flask_bcrypt import Bcrypt
 from functools import wraps
@@ -12,6 +12,8 @@ from utils import *
 from add_dummy_data import *
 
 app = create_app(os.environ.get("FLASK_ENV"))
+# # Define the validity of a session for 15 minutes
+# app.permanent_session_lifetime = timedelta(minutes=15)
 bcrypt_obj = Bcrypt(app)
 
 
@@ -113,6 +115,7 @@ def index():
     last_few_months_text = get_month_year_text_for_last_few_months_(current_date.year, current_date.month)
     category_wise_expenditure_MTD = get_from_summarization_category_wise_expenditure_MTD(session['user'], current_date.year, \
         current_date.month)
+    print('>---------------->', session)
     return render_template('index.html',
         name_display=f'{session["name"]} {session["surname"]}',
         welcome_name=session["name"],

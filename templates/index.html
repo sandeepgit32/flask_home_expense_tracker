@@ -30,6 +30,11 @@
         <!-- <a href="#">
           <i class="fa fa-search" aria-hidden="true"></i>
         </a> -->
+        <a href="#">
+          <!-- <img width="30" src="assets/avatar.svg" alt="" />
+          <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
+          <span class="name_label">{{ name_display }}</span>
+        </a>
         <a href="#" id="myBtn">
           <i class="fa fa-clock-o" aria-hidden="true"></i>
         </a>
@@ -43,10 +48,9 @@
             </div>
         
         </div>
-        <a href="#">
-          <!-- <img width="30" src="assets/avatar.svg" alt="" />
-          <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
-          <span class="name_label">{{ name_display }}</span>
+        
+        <a href="{{url_for('logout')}}">
+          <i class="fa fa-power-off" style="color: rgb(245, 80, 80);"></i>
         </a>
       </div>
     </nav>

@@ -7,5 +7,5 @@ This web app was built with tutorial of Jonas Schmedtmann's Complete Javascript 
 
 
 TODO
-Automatic session timer
 Convert last 6 months chart to grouped bar
+Implement conversion of utc and local
