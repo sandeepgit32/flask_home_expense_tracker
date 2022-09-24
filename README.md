@@ -7,5 +7,4 @@ This web app was built with tutorial of Jonas Schmedtmann's Complete Javascript 
 
 
 TODO
-Convert last 6 months chart to grouped bar
 Implement conversion of utc and local

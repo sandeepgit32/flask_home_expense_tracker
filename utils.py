@@ -57,7 +57,7 @@ def get_cumulative_list(a_list):
 
 
 def get_last_few_months_year_month_time_bucket(current_year, current_month):
-    past_num_months = 12
+    past_num_months = 6
     if current_month >= past_num_months:
         return [create_year_month_time_bucket(current_year, y) for y in range(current_month-5, current_month+1)]
     else:

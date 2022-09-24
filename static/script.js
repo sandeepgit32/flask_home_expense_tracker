@@ -34,6 +34,35 @@ var expenditure_last_few_months = JSON.parse(document.getElementById("apex1-data
 // Before parsing the sting using JSON.parse, we need to conver all ' (single quotes) to " (double quotes) 
 var last_few_months_text = JSON.parse(document.getElementById("apex1-data3")
   .getAttribute('last_few_months_text').replaceAll("\'","\""));
+// var options = {
+//   series: [{
+//     name: 'Total Budget',
+//     data: income_last_few_months
+//   }, {
+//     name: 'Expenditure',
+//     data: expenditure_last_few_months
+//   }],
+//   chart: {
+//     type: 'area',
+//     height: 400
+//   },
+//   dataLabels: {
+//     enabled: false
+//   },
+//   colors: ['#33b2df', '#3e7d06'],
+//   stroke: {
+//     curve: 'straight'
+//   },
+//   markers: {
+//     size: 5,
+//     hover: {
+//       size: 9
+//     }
+//   },
+//   xaxis: {
+//     categories: last_few_months_text,
+//   },
+// };
 var options = {
   series: [{
     name: 'Total Budget',
@@ -42,22 +71,39 @@ var options = {
     name: 'Expenditure',
     data: expenditure_last_few_months
   }],
-  chart: {
-    type: 'area',
+    chart: {
+    type: 'bar',
     height: 400
   },
-  dataLabels: {
-    enabled: false
-  },
-  colors: ['#33b2df', '#3e7d06'],
-  stroke: {
-    curve: 'straight'
-  },
-  markers: {
-    size: 5,
-    hover: {
-      size: 9
+  plotOptions: {
+    bar: {
+      horizontal: false,
+      borderRadius: 1,
+      dataLabels: {
+        position: 'top',
+      },
     }
+  },
+  dataLabels: {
+    enabled: true,
+    offsetX: 0,
+    style: {
+      fontSize: '10px',
+      colors: ['#fff']
+    }
+  },
+  colors: ['#ff6666', '#00b300'],
+  stroke: {
+    show: true,
+    width: 1,
+    colors: ['#666666']
+  },
+  fill: {
+    opacity: 0.72
+  },
+  tooltip: {
+    shared: true,
+    intersect: false
   },
   xaxis: {
     categories: last_few_months_text,
@@ -78,6 +124,7 @@ var options = {
   type: 'donut',
   height: 400
 },
+colors: ['#33b2df', '#77b300', '#ff6666', '#9999ff', '#e69900', '#85adad'],
 labels: category_wise_expenditure_MTD['category'],
 responsive: [{
   breakpoint: 480,
@@ -149,6 +196,7 @@ days_passed_percent = JSON.parse(document.getElementById("target1-data2")
     }
   },
   labels: ['Expenditure', 'Time passed'],
+  colors: ['#33b2df', '#59b300'],
 };
 
 var chart = new ApexCharts(document.querySelector("#target1"), options);
