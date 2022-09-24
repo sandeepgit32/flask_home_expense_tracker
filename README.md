@@ -8,3 +8,4 @@ This web app was built with tutorial of Jonas Schmedtmann's Complete Javascript 
 
 TODO
 Implement conversion of utc and local
+what if there is no transaction in one of last six months?

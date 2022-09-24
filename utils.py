@@ -1,4 +1,5 @@
 from db import db
+import pandas as pd
 
 
 def get_month_wise_day_count(year, month):
@@ -344,3 +345,19 @@ def update_monthly_expenditure_value(user, current_year, current_month, category
         VALUES('{user}','{time_bucket}', '{category}', 'negative', {value})
         '''
         db.engine.execute(insert_query)
+
+
+
+def get_transaction_details(user, current_year, current_month):
+    query = f'''
+    SELECT CONCAT(transaction_day, '/', transaction_month, '/', transaction_year) AS transaction_date,
+    transaction_type, description, category, value
+    FROM transaction_model
+    WHERE user = '{user}'
+    AND transaction_year = {current_year}
+    AND transaction_month = {current_month}
+    ORDER BY transaction_day DESC; 
+    '''
+    result = db.engine.execute(query).fetchall()
+    df = pd.DataFrame(result, columns= ['transaction_date','transaction_type', 'description', 'category', 'value'])
+    return df

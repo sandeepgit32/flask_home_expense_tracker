@@ -95,6 +95,7 @@
                                     <option value="2022" {% if transaction_year==2022 %} selected="selected"{% endif %}>2022</option>
                                 </select>
                                 <button type="submit" class="add__btn"><i class="ion-ios-checkmark-outline"></i></button>
+                                <a href="{{ url_for('downloadcsv') }}" class="download_text">Download data as csv</a>
                             </form>
                         </span>
                     </div>

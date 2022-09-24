@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
 load_dotenv('.env', verbose=True)
-from flask import render_template, request, redirect, url_for, session, flash
-from datetime import date, datetime, timedelta
+from flask import render_template, request, redirect, url_for, session, flash, make_response
+from datetime import date, datetime
 from models import UserModel, TransactionModel
 from flask_bcrypt import Bcrypt
 from functools import wraps
@@ -81,6 +81,7 @@ def logout():
     session['name'] = None
     session['surname'] = None
     session['last_login_time'] = None
+    session['year'], session['month'] = None, None
     return redirect(url_for('index'))
 
 
@@ -142,6 +143,8 @@ def transactions():
         transaction_year, transaction_month = int(request.form['transaction_list_year']), \
             int(request.form['transaction_list_month']) # request.form always send data as string
         # current_month_text = current_date.strftime("%B")
+    
+    session['year'], session['month'] = transaction_year, transaction_month
 
     positive_transactions = TransactionModel.find_by_year_month_type(
         transaction_type='positive',
@@ -258,6 +261,20 @@ def delete():
             update_daily_expenditure_value(session['user'], int(transaction.transaction_year), \
                 int(transaction.transaction_month), int(transaction.transaction_day))
         return redirect(url_for('transactions'))
+
+
+@app.route('/downloadcsv')
+@authentication_required
+def downloadcsv():
+    if (session['year'] is not None) and (session['month'] is not None):
+        df = get_transaction_details(session['user'], session['year'], session['month'])
+    else:
+        current_date = date.today()
+        df = get_transaction_details(session['user'], current_date.year, current_date.month)
+    response = make_response(df.to_csv(index=False))
+    response.headers["Content-Disposition"] = "attachment; filename=data.csv"
+    response.headers["Content-Type"] = "text/csv"
+    return response
 
 
 @app.route('/dummy')
