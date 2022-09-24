@@ -95,8 +95,8 @@ def index():
     current_month_budget = get_from_summarization_current_month_income(session['user'], current_date.year, current_date.month)
     MTD_expenditure = get_from_summarization_MTD_expenditure(session['user'], current_date.year, current_date.month, current_date.day)
     available_budget = current_month_budget - MTD_expenditure
-    days_remaining = get_month_wise_day_count(current_date.month) - current_date.day
-    days_passed_percent = round(current_date.day*100/get_month_wise_day_count(current_date.month), 1)
+    days_remaining = get_month_wise_day_count(current_date.year, current_date.month) - current_date.day
+    days_passed_percent = round(current_date.day*100/get_month_wise_day_count(current_date.year, current_date.month), 1)
     if current_month_budget == 0:
         current_expenditure_percent = 0
     else:

@@ -1,10 +1,14 @@
 from db import db
 
 
-def get_month_wise_day_count(month):
+def get_month_wise_day_count(year, month):
+    if (year % 4 == 0): # leap year
+        feb_month_days = 29
+    else:
+        feb_month_days = 28
     return {
         1: 31,
-        2: 28,
+        2: feb_month_days,
         3: 31,
         4: 30,
         5: 31,
@@ -148,7 +152,7 @@ def get_from_summarization_cumulative_expenditure_day_wise_MTD(user, current_yea
 
 def get_from_summarization_cumulative_expected_expenditure_day_wise(user, current_year, current_month):
     total_budget = get_from_summarization_current_month_income(user, current_year, current_month)
-    num_of_days_in_current_month = get_month_wise_day_count(current_month)
+    num_of_days_in_current_month = get_month_wise_day_count(current_year, current_month)
     value_list = [round(total_budget*x/num_of_days_in_current_month, 1) for x in range(1, num_of_days_in_current_month+1)]
     return value_list
 
