@@ -55,6 +55,7 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
+        # print('------------------->', request.__dict__) # Object converted to dict
         u = request.form['username']
         p = request.form['password']  # Hashing the password
         user_data = UserModel.query.filter_by(username=u).first()
@@ -65,6 +66,7 @@ def login():
                 session['user'] = u # Store the username in session variable for display after redirection
                 session['name'] = user_data.name
                 session['surname'] = user_data.surname
+                session['timezone'] = request.form['timezone']
                 session['last_login_time'] = user_data.last_login_time
                 # Update the last_login_time in the database as the current log_in time, so for the 
                 # next login this will be displayed as the last_login_time. 
@@ -81,7 +83,7 @@ def logout():
     session['name'] = None
     session['surname'] = None
     session['last_login_time'] = None
-    session['year'], session['month'] = None, None
+    session['year'], session['month'], session['timezone'] = None, None, None
     return redirect(url_for('index'))
 
 

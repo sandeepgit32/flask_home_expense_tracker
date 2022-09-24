@@ -28,5 +28,11 @@
 	<script src="{{ url_for('static', filename='vendor/daterangepicker/daterangepicker.js')}}"></script>
 	<script src="{{ url_for('static', filename='vendor/countdowntime/countdowntime.js')}}"></script>
 	<script src="{{ url_for('static', filename='js/main.js')}}"></script>
+	<script  type = "text/javascript">
+		$(document).ready(function () {
+			// Getting the timezone for the client
+            $("#timezone").val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        });
+	</script>
 </body>
 </html>
