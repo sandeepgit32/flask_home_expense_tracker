@@ -1,5 +1,7 @@
+import pytz
 from db import db
 import pandas as pd
+from datetime import datetime
 
 
 def get_month_wise_day_count(year, month):
@@ -37,6 +39,11 @@ MONTH_MAP = {
     11: "Nov",
     12: "Dec",
 }
+
+
+def get_current_datetime_in_given_timezone(timezone):
+    now_tz = datetime.now(pytz.timezone(timezone))
+    return now_tz
 
 
 def create_year_month_time_bucket(current_year, current_month):

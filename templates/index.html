@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
 
-  <!-- <link rel="icon" type="image/png" href="assets/dgit-logo.png"> -->
+  <!-- <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}"> -->
   <link type="text/css" href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
   <title>Expense Tracker</title>
 </head>
@@ -60,7 +60,7 @@
         <!-- MAIN TITLE STARTS HERE -->
 
         <div class="main__title">
-          <!-- <img src="assets/hello.svg" alt="" /> -->
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="" style="width:5%;" />
           <div class="main__greeting">
             <h1>Welcome {{ welcome_name }}</h1>
             <p>Last login: {{ last_login_time }}</p>
@@ -177,7 +177,7 @@
     <div id="sidebar">
       <div class="sidebar__title">
         <div class="sidebar__img">
-          <!-- <img src="assets/dgit-logo.png" alt="logo" style="width:15%; margin-right: 3%;" /> -->
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="width:15%; margin-right: 3%;" />
           <h3>Expense Tracker</h3>
         </div>
         <i onclick="closeSidebar()" class="fa fa-times" id="sidebarIcon" aria-hidden="true"></i>

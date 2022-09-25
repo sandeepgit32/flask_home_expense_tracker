@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
 load_dotenv('.env', verbose=True)
-from flask import render_template, request, redirect, url_for, session, flash, make_response
-from datetime import date, datetime
+from flask import render_template, request, redirect, url_for, session, flash, make_response, send_from_directory
+from datetime import datetime
 from models import UserModel, TransactionModel
 from flask_bcrypt import Bcrypt
 from functools import wraps
@@ -25,6 +25,15 @@ def authentication_required(func):
         else:
             return render_template('login.html')
     return wrapper
+
+
+@app.route('/favicon.ico')
+def favicon():
+    '''
+    Get the fabicon file without using html
+    '''
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'images/icons/favicon.ico', \
+        mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -70,7 +79,8 @@ def login():
                 session['last_login_time'] = user_data.last_login_time
                 # Update the last_login_time in the database as the current log_in time, so for the 
                 # next login this will be displayed as the last_login_time. 
-                user_data.last_login_time = datetime.now()
+                user_data.last_login_time = get_current_datetime_in_given_timezone(request.form['timezone'])\
+                    .strftime('%I:%M:%S %p - %A, %B-%d, %Y') + f' (Timezone - {session["timezone"]})'
                 db.session.commit()
                 return redirect(url_for('index'))
         return render_template('login.html', message="Incorrect Details!")
@@ -95,7 +105,7 @@ def logout():
 @app.route('/')
 @authentication_required
 def index():
-    current_date = date.today()
+    current_date = get_current_datetime_in_given_timezone(session['timezone']).date() # current date in client timezone
     current_month_budget = get_from_summarization_current_month_income(session['user'], current_date.year, current_date.month)
     MTD_expenditure = get_from_summarization_MTD_expenditure(session['user'], current_date.year, current_date.month, current_date.day)
     available_budget = current_month_budget - MTD_expenditure
@@ -118,7 +128,7 @@ def index():
     category_wise_expenditure_MTD = get_from_summarization_category_wise_expenditure_MTD(session['user'], current_date.year, \
         current_date.month)
     if session['last_login_time']:
-        last_login_time = session['last_login_time'].strftime('%I:%M:%S %p - %A, %B-%d, %Y')
+        last_login_time = session['last_login_time']
     else:
         last_login_time = 'NA'
     return render_template('index.html',
@@ -143,7 +153,7 @@ def index():
 @authentication_required
 def transactions():
     if request.method == 'GET':
-        current_date = date.today()
+        current_date = get_current_datetime_in_given_timezone(session['timezone']).date() # current date in client timezone
         transaction_year, transaction_month = current_date.year, current_date.month
     elif request.method == 'POST':
         transaction_year, transaction_month = int(request.form['transaction_list_year']), \
@@ -201,7 +211,7 @@ def add():
     else:
         selected_date = request.form['date']
         selected_date_format = datetime.strptime(selected_date, '%Y-%m-%d').date()
-        if selected_date_format > date.today():
+        if selected_date_format > get_current_datetime_in_given_timezone(session['timezone']).date(): # current date in client timezone
             flash('Selecting a future date is not allowed!')
             return redirect(url_for('transactions'))
         selected_year, selected_month, selected_day = selected_date.split('-')
@@ -230,7 +240,7 @@ def add():
             transaction_month=int(selected_month),
             transaction_year=int(selected_year),
             transaction_type=request.form['transaction_type'],
-            storing_datetime=datetime.now(),
+            storing_datetime=datetime.utcnow(),
             category=category,
             value=round(inserted_value, 1)
         )
@@ -279,7 +289,7 @@ def downloadcsv():
     if (session['year'] is not None) and (session['month'] is not None):
         df = get_transaction_details(session['user'], session['year'], session['month'])
     else:
-        current_date = date.today()
+        current_date = get_current_datetime_in_given_timezone(session['timezone']).date() # current date in client timezone
         df = get_transaction_details(session['user'], current_date.year, current_date.month)
     response = make_response(df.to_csv(index=False))
     response.headers["Content-Disposition"] = "attachment; filename=data.csv"
