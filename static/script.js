@@ -34,36 +34,8 @@ var expenditure_last_few_months = JSON.parse(document.getElementById("apex1-data
 // Before parsing the sting using JSON.parse, we need to conver all ' (single quotes) to " (double quotes) 
 var last_few_months_text = JSON.parse(document.getElementById("apex1-data3")
   .getAttribute('last_few_months_text').replaceAll("\'","\""));
-// var options = {
-//   series: [{
-//     name: 'Total Budget',
-//     data: income_last_few_months
-//   }, {
-//     name: 'Expenditure',
-//     data: expenditure_last_few_months
-//   }],
-//   chart: {
-//     type: 'area',
-//     height: 400
-//   },
-//   dataLabels: {
-//     enabled: false
-//   },
-//   colors: ['#33b2df', '#3e7d06'],
-//   stroke: {
-//     curve: 'straight'
-//   },
-//   markers: {
-//     size: 5,
-//     hover: {
-//       size: 9
-//     }
-//   },
-//   xaxis: {
-//     categories: last_few_months_text,
-//   },
-// };
-var options = {
+
+  var options = {
   series: [{
     name: 'Total Budget',
     data: income_last_few_months
@@ -179,17 +151,19 @@ days_passed_percent = JSON.parse(document.getElementById("target1-data2")
     radialBar: {
       dataLabels: {
         name: {
-          fontSize: '20px',
+          fontSize: '18px',
+          color: "#2e4a66",
         },
         value: {
-          fontSize: '30px',
+          fontSize: '16px',
+          color: "#2e4a66",
         },
         total: {
           show: true,
-          label: 'Expenditure',
+          label: `Expenditure - ${current_expenditure_percent}%`,
           formatter: function (w) {
             // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
-            return current_expenditure_percent + '%'
+            return 'Time - ' + days_passed_percent + '%'
           }
         }
       }

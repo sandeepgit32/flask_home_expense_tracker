@@ -145,6 +145,7 @@ def get_from_summarization_YTD_expenditure(user, current_year, current_month, cu
 
 def get_from_summarization_cumulative_expenditure_day_wise_MTD(user, current_year, current_month, current_day):
     time_bucket = create_year_month_time_bucket(current_year, current_month)
+    day_list_mtd = list(range(1, current_day+1))
     query = f'''
     SELECT transaction_day, value FROM daily_summarization_model
     WHERE user = '{user}'
@@ -154,8 +155,15 @@ def get_from_summarization_cumulative_expenditure_day_wise_MTD(user, current_yea
     ORDER BY transaction_day ASC;
     '''
     result = db.engine.execute(query).fetchall()
-    value_list = [x[1] for x in result]
-    return get_cumulative_list(value_list)
+    result_dict = {x[0]:x[1] for x in result}
+    output = []
+    for day in day_list_mtd:
+        if result_dict.get(day):
+            output.append(round(result_dict.get(day), 1))
+        else:
+            output.append(0)
+
+    return get_cumulative_list(output)
 
 
 def get_from_summarization_cumulative_expected_expenditure_day_wise(user, current_year, current_month):

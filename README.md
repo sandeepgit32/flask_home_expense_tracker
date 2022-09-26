@@ -8,3 +8,4 @@ This web app was built with tutorial of Jonas Schmedtmann's Complete Javascript 
 
 TODO
 Implement conversion of utc and local
+In daily transaction add zeros to days where there is no transaction
